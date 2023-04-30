@@ -1,25 +1,44 @@
 import {Text, TouchableHighlight, StyleSheet} from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import {KeyboardButton} from '../../../App';
 
 export interface IWordButton {
   word: string;
   keboardButton: KeyboardButton;
-  setGuessWord: (word: string, keyboardButton: KeyboardButton) => void;
+  isButtonUsed: boolean;
+  wordIndex?: number;
+  updateGuessWord: (word: string, keyboardButton: KeyboardButton) => void;
+  addButonToUsed?: (usedButtonIndex: number) => void;
+  removeButtonFromUsed?: () => void;
 }
 
 export default function WordButton({
   word,
   keboardButton,
-  setGuessWord,
+  updateGuessWord,
+  addButonToUsed,
+  removeButtonFromUsed,
+  isButtonUsed,
+  wordIndex,
 }: IWordButton) {
   function onWordButtonPressed(word: string) {
-    setGuessWord(word, keboardButton);
+    addButonToUsed &&
+      wordIndex !== undefined &&
+      !isButtonUsed &&
+      addButonToUsed(wordIndex);
+
+    updateGuessWord(word, keboardButton);
+
+    keboardButton === KeyboardButton.Backspace &&
+      removeButtonFromUsed &&
+      removeButtonFromUsed();
   }
 
   return (
     <TouchableHighlight
-      style={styles.button}
+      disabled={isButtonUsed}
+      style={[styles.button, isButtonUsed && styles.disableButtonStyle]}
+      activeOpacity={0}
       underlayColor="#606364"
       onPress={() => {
         onWordButtonPressed(word);
@@ -44,5 +63,8 @@ const styles = StyleSheet.create({
     color: 'white',
     textTransform: 'uppercase',
     fontWeight: 'bold',
+  },
+  disableButtonStyle: {
+    opacity: 0.2,
   },
 });

@@ -12,6 +12,7 @@ export enum KeyboardButton {
 
 function App() {
   const [guessWord, setGuessWord] = useState<string>('');
+  const [usedButtons, setUsedButtons] = useState<number[]>([]);
 
   function updateGuessWord(word: string, keyboardButton: KeyboardButton) {
     if (keyboardButton === KeyboardButton.Backspace) {
@@ -22,7 +23,24 @@ function App() {
     }
   }
 
-  console.log(guessWord);
+  function addButonToUsed(buttonIndex: number) {
+    setUsedButtons(prev => [...prev, buttonIndex]);
+  }
+
+  function removeButtonFromUsed() {
+    setUsedButtons(prev => {
+      prev = prev.slice(0, prev.length - 1);
+      return prev;
+    });
+  }
+
+  function isUsedButton(index: number): boolean {
+    const indexFound: boolean =
+      usedButtons.findIndex(buttonIndex => index === buttonIndex) !== -1;
+    return indexFound;
+  }
+
+  console.log(usedButtons);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -31,22 +49,28 @@ function App() {
         {wordList[0].words.map((word, index) => {
           return (
             <WordButton
+              isButtonUsed={isUsedButton(index)}
               keboardButton={KeyboardButton.Word}
               key={index}
               word={word}
-              setGuessWord={updateGuessWord}
+              updateGuessWord={updateGuessWord}
+              addButonToUsed={addButonToUsed}
+              wordIndex={index}
             />
           );
         })}
         <WordButton
+          isButtonUsed={false}
           keboardButton={KeyboardButton.Backspace}
           word="<"
-          setGuessWord={updateGuessWord}
+          updateGuessWord={updateGuessWord}
+          removeButtonFromUsed={removeButtonFromUsed}
         />
         <WordButton
+          isButtonUsed={false}
           keboardButton={KeyboardButton.Enter}
           word="EN"
-          setGuessWord={updateGuessWord}
+          updateGuessWord={updateGuessWord}
         />
       </View>
     </SafeAreaView>
