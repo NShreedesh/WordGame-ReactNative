@@ -1,16 +1,23 @@
 import {Text, TouchableHighlight, StyleSheet} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 
 export interface IWordButton {
   word: string;
+  setGuessWord: (word: string) => void;
 }
 
-export default function WordButton({word}: IWordButton) {
+export default function WordButton({word, setGuessWord}: IWordButton) {
+  function onWordButtonPressed(word: string) {
+    setGuessWord(word);
+  }
+
   return (
     <TouchableHighlight
       style={styles.button}
       underlayColor="#606364"
-      onPress={() => {}}>
+      onPress={() => {
+        onWordButtonPressed(word);
+      }}>
       <Text style={styles.buttonText}>{word}</Text>
     </TouchableHighlight>
   );

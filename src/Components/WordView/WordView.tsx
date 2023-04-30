@@ -1,10 +1,14 @@
 import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 
-export default function WordView() {
+interface IWordView {
+  guessWord: string;
+}
+
+export default function WordView({guessWord}: IWordView) {
   return (
     <View style={styles.wordView}>
-      <Text style={styles.viewText}>Word View</Text>
+      <Text style={styles.viewText}>{guessWord}</Text>
     </View>
   );
 }
