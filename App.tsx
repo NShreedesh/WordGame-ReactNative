@@ -3,6 +3,7 @@ import {SafeAreaView, StyleSheet, View} from 'react-native';
 import WordButton from './src/Components/WordButton/WordButton';
 import {wordList} from './src/Data/WordListData';
 import WordView from './src/Components/WordView/WordView';
+import {func} from 'prop-types';
 
 export enum KeyboardButton {
   Word,
@@ -13,6 +14,7 @@ export enum KeyboardButton {
 function App() {
   const [guessWord, setGuessWord] = useState<string>('');
   const [usedButtons, setUsedButtons] = useState<number[]>([]);
+  const [levelNumber, setLevelNumber] = useState<number>(0);
 
   function updateGuessWord(word: string, keyboardButton: KeyboardButton) {
     if (keyboardButton === KeyboardButton.Backspace) {
@@ -40,13 +42,17 @@ function App() {
     return indexFound;
   }
 
+  function changeLevel() {
+    setLevelNumber(prev => prev + 1);
+  }
+
   console.log(usedButtons);
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <WordView guessWord={guessWord} />
       <View style={styles.wordButtonParent}>
-        {wordList[0].words.map((word, index) => {
+        {wordList[levelNumber].words.map((word, index) => {
           return (
             <WordButton
               isButtonUsed={isUsedButton(index)}
