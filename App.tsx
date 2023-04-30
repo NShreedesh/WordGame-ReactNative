@@ -4,13 +4,19 @@ import WordButton from './src/Components/WordButton/WordButton';
 import {wordList} from './src/Data/WordListData';
 import WordView from './src/Components/WordView/WordView';
 
+export enum KeyboardButton {
+  Word,
+  Backspace,
+  Enter,
+}
+
 function App() {
   const [guessWord, setGuessWord] = useState<string>('');
 
-  function updateGuessWord(word: string) {
-    if (word === '<') {
+  function updateGuessWord(word: string, keyboardButton: KeyboardButton) {
+    if (keyboardButton === KeyboardButton.Backspace) {
       setGuessWord(prev => prev.slice(0, prev.length - 1));
-    } else if (word === 'EN') {
+    } else if (keyboardButton === KeyboardButton.Enter) {
     } else {
       setGuessWord(prev => prev + word);
     }
@@ -25,14 +31,23 @@ function App() {
         {wordList[0].words.map((word, index) => {
           return (
             <WordButton
+              keboardButton={KeyboardButton.Word}
               key={index}
               word={word}
               setGuessWord={updateGuessWord}
             />
           );
         })}
-        <WordButton word="<" setGuessWord={updateGuessWord} />
-        <WordButton word="EN" setGuessWord={updateGuessWord} />
+        <WordButton
+          keboardButton={KeyboardButton.Backspace}
+          word="<"
+          setGuessWord={updateGuessWord}
+        />
+        <WordButton
+          keboardButton={KeyboardButton.Enter}
+          word="EN"
+          setGuessWord={updateGuessWord}
+        />
       </View>
     </SafeAreaView>
   );

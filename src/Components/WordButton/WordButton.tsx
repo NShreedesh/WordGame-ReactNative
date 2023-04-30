@@ -1,14 +1,20 @@
 import {Text, TouchableHighlight, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
+import {KeyboardButton} from '../../../App';
 
 export interface IWordButton {
   word: string;
-  setGuessWord: (word: string) => void;
+  keboardButton: KeyboardButton;
+  setGuessWord: (word: string, keyboardButton: KeyboardButton) => void;
 }
 
-export default function WordButton({word, setGuessWord}: IWordButton) {
+export default function WordButton({
+  word,
+  keboardButton,
+  setGuessWord,
+}: IWordButton) {
   function onWordButtonPressed(word: string) {
-    setGuessWord(word);
+    setGuessWord(word, keboardButton);
   }
 
   return (
