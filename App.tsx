@@ -119,20 +119,22 @@ function App() {
     <SafeAreaView style={styles.safeArea}>
       <WordView guessWord={guessWord} answerState={answerState} />
       <Image style={styles.image} source={wordList[levelNumber].imageName} />
-      <View style={styles.wordButtonParent}>
-        {shuffeledAnswer.map((word, index) => {
-          return (
-            <WordButton
-              isButtonUsed={isUsedButton(index)}
-              keboardButton={KeyboardButton.Word}
-              key={index}
-              word={word}
-              updateGuessWord={updateGuessWord}
-              addButonToUsed={addButonToUsed}
-              wordIndex={index}
-            />
-          );
-        })}
+      <View style={styles.allButtons}>
+        <View style={styles.wordButtonParent}>
+          {shuffeledAnswer.map((word, index) => {
+            return (
+              <WordButton
+                isButtonUsed={isUsedButton(index)}
+                keboardButton={KeyboardButton.Word}
+                key={index}
+                word={word}
+                updateGuessWord={updateGuessWord}
+                addButonToUsed={addButonToUsed}
+                wordIndex={index}
+              />
+            );
+          })}
+        </View>
         <View style={styles.bottomButtonView}>
           <WordButton
             isButtonUsed={false}
@@ -157,19 +159,14 @@ function App() {
 export default App;
 
 const styles = StyleSheet.create({
-  wordView: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'red',
-    marginTop: 20,
-    paddingVertical: 10,
-  },
   safeArea: {
     height: '100%',
     backgroundColor: '#121213',
     display: 'flex',
     gap: 20,
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    paddingHorizontal: 8,
   },
   wordButtonParent: {
     display: 'flex',
@@ -177,9 +174,11 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 6,
     justifyContent: 'center',
-    position: 'absolute',
     bottom: 50,
     marginHorizontal: 10,
+  },
+  allButtons: {
+    display: 'flex',
   },
   image: {
     height: 200,
@@ -188,7 +187,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   bottomButtonView: {
-    width: '90%',
     display: 'flex',
     flexDirection: 'row',
     gap: 10,
