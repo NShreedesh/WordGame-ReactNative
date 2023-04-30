@@ -84,11 +84,14 @@ function App() {
     const letters = [...Array(26)].map((_, i) =>
       String.fromCharCode('a'.charCodeAt(0) + i),
     );
-    const words: string[] = wordList[levelNumber].answer.split('');
+    const words: string[] = wordList[levelNumber].answer
+      .toLowerCase()
+      .split('');
     const shuffeledWords: string[] = [];
 
     while (words.length > 0) {
       const random = Math.floor(Math.random() * words.length);
+
       shuffeledWords.push(words[random]);
       letters.splice(letters.indexOf(words[random]), 1);
       words.splice(random, 1);

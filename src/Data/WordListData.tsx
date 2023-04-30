@@ -5,7 +5,7 @@ export interface IWord {
 
 export const wordList: IWord[] = [
   {
-    answer: 'eat',
+    answer: 'APPLE',
     uri: 'https://media.istockphoto.com/id/458047741/photo/biting-an-apple.jpg?b=1&s=170667a&w=0&k=20&c=PYRSfJmj40Al01m-INgp4FrCjIRHu8NNErPzMdZghrg=',
   },
   {
