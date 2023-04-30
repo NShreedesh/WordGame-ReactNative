@@ -22,12 +22,14 @@ function App() {
   const [shuffeledAnswer, setShuffeledAnswer] = useState<string[]>([]);
   const [levelNumber, setLevelNumber] = useState<number>(0);
   const [answerState, setAnswerState] = useState<AnswerState>(AnswerState.None);
+  const [isLevelOver, setIsLevelOver] = useState<boolean>(false);
 
   useEffect(() => {
     shuffleWord();
   }, [levelNumber]);
 
   function updateGuessWord(word: string, keyboardButton: KeyboardButton) {
+    if (isLevelOver) return;
     if (keyboardButton === KeyboardButton.Backspace) {
       setGuessWord(prev => prev.slice(0, prev.length - 1));
     } else if (keyboardButton === KeyboardButton.Enter) {
@@ -37,10 +39,12 @@ function App() {
   }
 
   function addButonToUsed(buttonIndex: number) {
+    if (isLevelOver) return;
     setUsedButtons(prev => [...prev, buttonIndex]);
   }
 
   function removeButtonFromUsed() {
+    if (isLevelOver) return;
     setUsedButtons(prev => {
       prev = prev.slice(0, prev.length - 1);
       return prev;
@@ -55,15 +59,18 @@ function App() {
 
   function changeLevel() {
     if (levelNumber >= wordList.length - 1) return;
+    setIsLevelOver(true);
     setTimeout(() => {
       setGuessWord('');
       setUsedButtons([]);
       setLevelNumber(prev => prev + 1);
       setAnswerState(AnswerState.None);
+      setIsLevelOver(false);
     }, 1000);
   }
 
   function checkAnswer() {
+    if (isLevelOver) return;
     if (guessWord === wordList[levelNumber].answer) {
       setAnswerState(AnswerState.Correct);
       changeLevel();
@@ -132,14 +139,14 @@ function App() {
           <WordButton
             isButtonUsed={false}
             keboardButton={KeyboardButton.Backspace}
-            word="<"
+            word="Backspace"
             updateGuessWord={updateGuessWord}
             removeButtonFromUsed={removeButtonFromUsed}
           />
           <WordButton
             isButtonUsed={false}
             keboardButton={KeyboardButton.Enter}
-            word="EN"
+            word="ENTER"
             updateGuessWord={updateGuessWord}
             checkAnswer={checkAnswer}
           />
@@ -184,7 +191,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
   },
   bottomButtonView: {
-    width: '100%',
+    width: '90%',
     display: 'flex',
     flexDirection: 'row',
     gap: 10,
