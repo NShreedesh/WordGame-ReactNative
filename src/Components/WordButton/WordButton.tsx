@@ -10,6 +10,7 @@ export interface IWordButton {
   updateGuessWord: (word: string, keyboardButton: KeyboardButton) => void;
   addButonToUsed?: (usedButtonIndex: number) => void;
   removeButtonFromUsed?: () => void;
+  checkAnswer?: () => void;
 }
 
 export default function WordButton({
@@ -20,6 +21,7 @@ export default function WordButton({
   removeButtonFromUsed,
   isButtonUsed,
   wordIndex,
+  checkAnswer,
 }: IWordButton) {
   function onWordButtonPressed(word: string) {
     addButonToUsed &&
@@ -32,12 +34,19 @@ export default function WordButton({
     keboardButton === KeyboardButton.Backspace &&
       removeButtonFromUsed &&
       removeButtonFromUsed();
+
+    keboardButton === KeyboardButton.Enter && checkAnswer && checkAnswer();
   }
 
   return (
     <TouchableHighlight
       disabled={isButtonUsed}
-      style={[styles.button, isButtonUsed && styles.disableButtonStyle]}
+      style={[
+        styles.button,
+        isButtonUsed && styles.disableButtonStyle,
+        (keboardButton == KeyboardButton.Enter ||
+          keboardButton == KeyboardButton.Backspace) && {flex: 1},
+      ]}
       activeOpacity={0}
       underlayColor="#606364"
       onPress={() => {

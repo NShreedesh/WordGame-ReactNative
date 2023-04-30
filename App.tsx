@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
-import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
 import WordButton from './src/Components/WordButton/WordButton';
 import {wordList} from './src/Data/WordListData';
 import WordView from './src/Components/WordView/WordView';
-import {func} from 'prop-types';
 
 export enum KeyboardButton {
   Word,
@@ -11,10 +10,17 @@ export enum KeyboardButton {
   Enter,
 }
 
+export enum AnswerState {
+  None,
+  Correct,
+  Wrong,
+}
+
 function App() {
   const [guessWord, setGuessWord] = useState<string>('');
   const [usedButtons, setUsedButtons] = useState<number[]>([]);
   const [levelNumber, setLevelNumber] = useState<number>(0);
+  const [answerState, setAnswerState] = useState<AnswerState>(AnswerState.None);
 
   function updateGuessWord(word: string, keyboardButton: KeyboardButton) {
     if (keyboardButton === KeyboardButton.Backspace) {
@@ -43,14 +49,34 @@ function App() {
   }
 
   function changeLevel() {
-    setLevelNumber(prev => prev + 1);
+    if (levelNumber >= wordList.length - 1) return;
+    setTimeout(() => {
+      setGuessWord('');
+      setUsedButtons([]);
+      setLevelNumber(prev => prev + 1);
+      setAnswerState(AnswerState.None);
+    }, 1000);
   }
 
-  console.log(usedButtons);
+  function checkAnswer() {
+    if (guessWord === wordList[levelNumber].answer) {
+      setAnswerState(AnswerState.Correct);
+      changeLevel();
+    } else {
+      setAnswerState(AnswerState.Wrong);
+      console.log('Wrong');
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <WordView guessWord={guessWord} />
+      <WordView guessWord={guessWord} answerState={answerState} />
+      <Image
+        style={styles.image}
+        source={{
+          uri: wordList[levelNumber].uri,
+        }}
+      />
       <View style={styles.wordButtonParent}>
         {wordList[levelNumber].words.map((word, index) => {
           return (
@@ -65,19 +91,22 @@ function App() {
             />
           );
         })}
-        <WordButton
-          isButtonUsed={false}
-          keboardButton={KeyboardButton.Backspace}
-          word="<"
-          updateGuessWord={updateGuessWord}
-          removeButtonFromUsed={removeButtonFromUsed}
-        />
-        <WordButton
-          isButtonUsed={false}
-          keboardButton={KeyboardButton.Enter}
-          word="EN"
-          updateGuessWord={updateGuessWord}
-        />
+        <View style={styles.bottomButtonView}>
+          <WordButton
+            isButtonUsed={false}
+            keboardButton={KeyboardButton.Backspace}
+            word="<"
+            updateGuessWord={updateGuessWord}
+            removeButtonFromUsed={removeButtonFromUsed}
+          />
+          <WordButton
+            isButtonUsed={false}
+            keboardButton={KeyboardButton.Enter}
+            word="EN"
+            updateGuessWord={updateGuessWord}
+            checkAnswer={checkAnswer}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -97,6 +126,8 @@ const styles = StyleSheet.create({
   safeArea: {
     height: '100%',
     backgroundColor: '#121213',
+    display: 'flex',
+    gap: 20,
   },
   wordButtonParent: {
     display: 'flex',
@@ -105,7 +136,20 @@ const styles = StyleSheet.create({
     gap: 6,
     justifyContent: 'center',
     position: 'absolute',
-    bottom: 30,
+    bottom: 50,
     marginHorizontal: 30,
+  },
+  image: {
+    height: 200,
+    width: 200,
+    alignSelf: 'center',
+    borderRadius: 10,
+    backgroundColor: 'red',
+  },
+  bottomButtonView: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
   },
 });
