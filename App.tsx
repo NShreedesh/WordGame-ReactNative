@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
 import WordButton from './src/Components/WordButton/WordButton';
 import {wordList} from './src/Data/WordListData';
@@ -19,8 +19,13 @@ export enum AnswerState {
 function App() {
   const [guessWord, setGuessWord] = useState<string>('');
   const [usedButtons, setUsedButtons] = useState<number[]>([]);
+  const [shuffeledAnswer, setShuffeledAnswer] = useState<string[]>([]);
   const [levelNumber, setLevelNumber] = useState<number>(0);
   const [answerState, setAnswerState] = useState<AnswerState>(AnswerState.None);
+
+  useEffect(() => {
+    shuffleWord();
+  }, [levelNumber]);
 
   function updateGuessWord(word: string, keyboardButton: KeyboardButton) {
     if (keyboardButton === KeyboardButton.Backspace) {
@@ -68,6 +73,38 @@ function App() {
     }
   }
 
+  function shuffleWord() {
+    const letters = [...Array(26)].map((_, i) =>
+      String.fromCharCode('a'.charCodeAt(0) + i),
+    );
+    const words: string[] = wordList[levelNumber].answer.split('');
+    const shuffeledWords: string[] = [];
+
+    while (words.length > 0) {
+      const random = Math.floor(Math.random() * words.length);
+      shuffeledWords.push(words[random]);
+      letters.splice(letters.indexOf(words[random]), 1);
+      words.splice(random, 1);
+    }
+
+    const shuffeledWordLength = shuffeledWords.length;
+
+    for (let i = 0; i < 21 - shuffeledWordLength; i++) {
+      const randomInShuffeledWords = Math.floor(
+        Math.random() * shuffeledWords.length,
+      );
+      const randomInLetters = Math.floor(Math.random() * letters.length);
+      shuffeledWords.splice(
+        randomInShuffeledWords,
+        0,
+        letters[randomInLetters],
+      );
+      letters.splice(letters.indexOf(letters[randomInLetters]), 1);
+    }
+
+    setShuffeledAnswer(shuffeledWords);
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <WordView guessWord={guessWord} answerState={answerState} />
@@ -78,7 +115,7 @@ function App() {
         }}
       />
       <View style={styles.wordButtonParent}>
-        {wordList[levelNumber].words.map((word, index) => {
+        {shuffeledAnswer.map((word, index) => {
           return (
             <WordButton
               isButtonUsed={isUsedButton(index)}
@@ -137,7 +174,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     bottom: 50,
-    marginHorizontal: 30,
+    marginHorizontal: 10,
   },
   image: {
     height: 200,

@@ -60,8 +60,8 @@ export default function WordButton({
 const styles = StyleSheet.create({
   button: {
     backgroundColor: '#818384',
-    width: 40,
-    height: 50,
+    width: 35,
+    height: 45,
     display: 'flex',
     borderRadius: 5,
     alignItems: 'center',
