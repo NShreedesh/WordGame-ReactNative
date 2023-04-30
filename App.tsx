@@ -118,12 +118,7 @@ function App() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <WordView guessWord={guessWord} answerState={answerState} />
-      <Image
-        style={styles.image}
-        source={{
-          uri: wordList[levelNumber].uri,
-        }}
-      />
+      <Image style={styles.image} source={wordList[levelNumber].imageName} />
       <View style={styles.wordButtonParent}>
         {shuffeledAnswer.map((word, index) => {
           return (
@@ -191,7 +186,6 @@ const styles = StyleSheet.create({
     width: 200,
     alignSelf: 'center',
     borderRadius: 10,
-    backgroundColor: 'red',
   },
   bottomButtonView: {
     width: '90%',
